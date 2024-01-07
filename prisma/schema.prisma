@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+model User {
+  Id                         Int                          @id @default(autoincrement())
+  Nom                        String                       @default("User")
+  Prenom                     String                       @default("Prenom")
+  Email                      String                       @unique
+  Password                   String                       @default("default")
+  Role                       Role                         @default(STUDENT)
+  ProfileImage      String  @default("https://firebasestorage.googleapis.com/v0/b/unifree-91a27.appspot.com/o/Capture%20d'%C3%A9cran%202023-11-02%20233453.png?alt=media&token=35f12d51-23e9-403b-8dff-8de77d136d97")
+  Commentaires               Commentaire[]
+  Formations                 Formation[]
+  Likes                      Like[]
+  StatutUtilisateurLecon     StatutUtilisateurLecon[]
+  StatutUtilisateurQuizz     StatutUtilisateurQuizz[]
+  StatutUtilisateurFormation StatutUtilisateurFormation[]
+}
+
+model Formation {
+  Id                         Int                          @id @default(autoincrement())
+  Author                     User                         @relation(fields: [AuthorId], references: [Id])
+  AuthorId                   Int
+  Titre                      String                       @default("DefaultFormation")
+  Description                String                       @default("DefaultDescription")
+  Categorie                  String                       @default("Informatique")
+  Commentaire                Commentaire[]
+  Lecons                     Lecon[]
+  Quizzs                     Quizz[]
+  Like                       Like[]
+  StatutUtilisateurFormation StatutUtilisateurFormation[]
+}
+
+model Commentaire {
+  Id          Int       @id @default(autoincrement())
+  Author      User      @relation(fields: [AuthorId], references: [Id])
+  AuthorId    Int
+  Formation   Formation @relation(fields: [FormationId], references: [Id])
+  FormationId Int
+  Contenu     String    @default("DefaultCONTENU")
+}
+
+model Like {
+  Id          Int       @id @default(autoincrement())
+  Author      User      @relation(fields: [AuthorId], references: [Id])
+  AuthorId    Int
+  Formation   Formation @relation(fields: [FormationId], references: [Id])
+  FormationId Int
+}
+
+model Lecon {
+  Id                     Int                      @id @default(autoincrement())
+  Formation              Formation                @relation(fields: [FormationId], references: [Id])
+  FormationId            Int
+  Titre                  String                   @default("")
+  Description            String                   @default("")
+  Contenu                String                   @default("")
+  StatutUtilisateurLecon StatutUtilisateurLecon[]
+}
+
+model Quizz {
+  Id                     Int                      @id @default(autoincrement())
+  Formation              Formation                @relation(fields: [FormationId], references: [Id])
+  FormationId            Int
+  Titre                  String
+  Description            String
+  Questions              Question[]
+  StatutUtilisateurQuizz StatutUtilisateurQuizz[]
+}
+
+model Question {
+  Id       Int        @id @default(autoincrement())
+  Enonce   String     @default("")
+  Quizz    Quizz      @relation(fields: [QuizzId], references: [Id])
+  QuizzId  Int
+  Reponses Response[]
+}
+
+model Response {
+  Id         Int      @id @default(autoincrement())
+  Question   Question @relation(fields: [QuestionId], references: [Id])
+  QuestionId Int
+  Contenu    String
+  Right      Boolean  @default(false)
+}
+
+model StatutUtilisateurLecon {
+  User    User    @relation(fields: [UserId], references: [Id])
+  UserId  Int
+  Lecon   Lecon   @relation(fields: [LeconId], references: [Id])
+  LeconId Int
+  isRead  Boolean @default(true)
+
+  @@id([UserId, LeconId])
+}
+
+model StatutUtilisateurQuizz {
+  User         User    @relation(fields: [UserId], references: [Id])
+  UserId       Int
+  Quizz        Quizz   @relation(fields: [QuizzId], references: [Id])
+  QuizzId      Int
+  isSuccessful Boolean @default(true)
+
+  @@id([UserId, QuizzId])
+}
+
+model StatutUtilisateurFormation {
+  User        User      @relation(fields: [UserId], references: [Id])
+  UserId      Int
+  Formation   Formation @relation(fields: [FormationId], references: [Id])
+  FormationId Int
+  isCompleted Boolean   @default(false)
+
+  @@id([UserId, FormationId])
+}
