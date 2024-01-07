@@ -455,7 +455,7 @@ const GetLikedFormations = async (id) => {
     console.log(JSON.stringify(data))
     return resp;
 }
-// Ptit test 2sdflsdfdssdqsqsdqdqd
+
 const getFollowedFormations = async (id) => {
     let resp;
     let data = []

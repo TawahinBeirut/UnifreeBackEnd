@@ -8,7 +8,7 @@ const router = express.Router()
 const bcrypt = require('bcrypt')
 
 const  { PrismaClient } = require('@prisma/client');
-const { getAllRequest, getSpecificRequest,getCreatedFormations,GetLikedFormations,getFollowedFormations,GetCompletedContent} = require('../genericRequests');
+const { getAllRequest,putSpecific, getSpecificRequest,getCreatedFormations,GetLikedFormations,getFollowedFormations,GetCompletedContent} = require('../genericRequests');
 const { Tables, Identificators } = require('../tables');
 
 const prisma = new PrismaClient();
@@ -23,6 +23,16 @@ router.get('/:id',async(req,res) => {
     
     const {id} = req.params;
     getSpecificRequest(Tables.User,Identificators.Id,id)
+    .then((resp) => res.json(resp))
+    .catch((err) => res.json(new Response(0,JSON.stringify(err))))
+})
+
+router.put('/:id',async(req,res) => {
+    const {id} = req.params;
+    const data = {
+        ProfileImage: req.body.ProfileImage
+    }
+    putSpecific(Tables.User,Identificators.Id,id,data)
     .then((resp) => res.json(resp))
     .catch((err) => res.json(new Response(0,JSON.stringify(err))))
 })
