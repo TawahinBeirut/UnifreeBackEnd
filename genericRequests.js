@@ -319,6 +319,7 @@ const getQuizz = async (id) => {
 
     for (let i = 0; i < questions.length; i++) {
         let tmpQuestion = {
+            id: questions[i].Id,
             title: questions[i].Enonce,
             answers: []
         }
@@ -329,6 +330,7 @@ const getQuizz = async (id) => {
         })
         for (let j = 0; j < responses.length; j++) {
             let tmpResponse = {
+                id: responses[j].Id,
                 title: responses[j].Contenu,
                 isCorrect: responses[j].Right
             }
