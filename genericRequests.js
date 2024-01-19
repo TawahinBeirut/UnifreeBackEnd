@@ -529,6 +529,7 @@ const PostFormation = async(Formation,Lessons) =>{
                 const tmpQuizz = {
                     FormationId: FormationId,
                     Titre: Lessons[i].title,
+                    Description: ""
                 }
                 const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
                 const QuizzId = result2.data.Id;
@@ -633,6 +634,7 @@ const postFormationBis = async(FormationId,Lessons) =>{
                 const tmpQuizz = {
                     FormationId: FormationId,
                     Titre: Lessons[i].title,
+                    Description : ""
                 }
                 const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
                 const QuizzId = result2.data.Id;
