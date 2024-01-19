@@ -510,6 +510,162 @@ const GetCompletedContent = async(id) => {
     }
     return resp;
 }
+const PostFormation = async(Formation,Lessons) =>{
+    let resp;
+    try {
+        const result = await postSpecificRequest(Tables.Formation, Formation);
+        const FormationId = result.data.Id
+
+        for (let i = 0; i < Lessons.length; i++){
+            if (!Lessons[i].isQuizz) {
+                const tmpLesson = {
+                    FormationId: FormationId,
+                    Titre: Lessons[i].Titre,
+                    Description: Lessons[i].Description,
+                    Contenu: Lessons[i].Contenu
+                }
+                await postSpecificRequest(Tables.Lesson, tmpLesson);
+            }
+            else {
+                const tmpQuizz = {
+                    FormationId: FormationId,
+                    Titre: Lessons[i].Titre,
+                    Description: Lessons[i].Description
+                }
+                const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
+                const QuizzId = result2.data.Id;
+                const Questions = Lessons[i].Questions
+
+                for (let j = 0; j < Questions.length; j++) {
+                    const tmpQuestion = {
+                        QuizzId: QuizzId,
+                        Enonce : Questions[j].Enonce
+                    }
+                    const result3 = await postSpecificRequest(Tables.Question,tmpQuestion);
+                    const QuestionId = result3.data.Id;
+                    const Reponses = Questions[j].Reponses;
+                    
+                    for (let k = 0;k<Reponses.length;k++){
+                        
+                        console.log("oe")
+                        const tmpReponse = {
+                            QuestionId: QuestionId,
+                            Right: Reponses[k].Right,
+                            Contenu : Reponses[k].Contenu
+                        }
+                        let res = await postSpecificRequest(Tables.Response,tmpReponse);
+                        console.log(res)
+                    }
+                }
+            }
+            }
+        resp = new DataResponse(200,"Formation bien upload");
+    } catch (e) {
+        resp= new Response(0,"Formation non upload , errr :" + JSON.stringify(e))
+    }
+    return resp;
+}
+
+const putFormation = async(id,Formation,Lessons) =>{
+    let resp = new Response(200,"Modification réussie")
+    try{
+    await clearFormation(id,Lessons)
+    
+    await prisma.formation.update({
+        where:{
+            Id: id
+        },
+        data: Formation 
+    })
+    
+    // Appel fonction postFormation bis
+    await postFormationBis(id,Lessons);
+    }
+    catch(err){
+        throw new Error("Modification non réussie")
+    }
+    return resp;
+}
+
+const clearFormation = async(id,Lessons) => {
+    await prisma.lecon.deleteMany({
+        where:{
+            FormationId: id
+        }
+    });
+    for (let i = 0; i < Lessons.length; i++){
+        if (Lessons[i].isQuizz) {
+            const QuizzId = Lessons[i].Id;
+            const Questions = Lessons[i].Questions
+
+            for (let j = 0; j < Questions.length; j++) {
+                const QuestionId = Questions[j].Id;
+                
+                    await prisma.response.deleteMany({
+                        where:{
+                            QuestionId: QuestionId
+                        }
+                    })
+            }
+            await prisma.question.deleteMany({
+                where:{
+                    QuizzId: QuizzId
+                }
+            })
+        }
+    }
+    await prisma.quizz.deleteMany({
+        where:{
+         FormationId: id   
+        }
+    })
+}
+
+const postFormationBis = async(FormationId,Lessons) =>{
+        for (let i = 0; i < Lessons.length; i++){
+            if (!Lessons[i].isQuizz) {
+                const tmpLesson = {
+                    FormationId: FormationId,
+                    Titre: Lessons[i].Titre,
+                    Description: Lessons[i].Description,
+                    Contenu: Lessons[i].Contenu
+                }
+                await postSpecificRequest(Tables.Lesson, tmpLesson);
+            }
+            else {
+                const tmpQuizz = {
+                    FormationId: FormationId,
+                    Titre: Lessons[i].Titre,
+                    Description: Lessons[i].Description
+                }
+                const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
+                const QuizzId = result2.data.Id;
+                const Questions = Lessons[i].Questions
+
+                for (let j = 0; j < Questions.length; j++) {
+                    const tmpQuestion = {
+                        QuizzId: QuizzId,
+                        Enonce : Questions[j].Enonce
+                    }
+                    const result3 = await postSpecificRequest(Tables.Question,tmpQuestion);
+                    const QuestionId = result3.data.Id;
+                    const Reponses = Questions[j].Reponses;
+                    
+                    for (let k = 0;k<Reponses.length;k++){
+                        
+                        console.log("oe")
+                        const tmpReponse = {
+                            QuestionId: QuestionId,
+                            Right: Reponses[k].Right,
+                            Contenu : Reponses[k].Contenu
+                        }
+                        let res = await postSpecificRequest(Tables.Response,tmpReponse);
+                        console.log(res)
+                    }
+                }
+            }
+            }
+}
 module.exports = {
     getAllRequest,
     getSpecificRequest,
@@ -525,5 +681,5 @@ module.exports = {
     GetQuizzFormation,
     CreateQuizz,
     getCreatedFormations, Reset, GetNbLikes, GetLikedFormations,
-    getFollowedFormations,GetCompletedContent
+    getFollowedFormations,GetCompletedContent,PostFormation,putFormation
 }
