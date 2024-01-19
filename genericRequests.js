@@ -532,7 +532,7 @@ const PostFormation = async(Formation,Lessons) =>{
                 }
                 const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
                 const QuizzId = result2.data.Id;
-                const Questions = Lessons[i].questions
+                const Questions = Lessons[i].content.questions
 
                 for (let j = 0; j < Questions.length; j++) {
                     const tmpQuestion = {
@@ -594,7 +594,7 @@ const clearFormation = async(id,Lessons) => {
     for (let i = 0; i < Lessons.length; i++){
         if (Lessons[i].isQuizz) {
             const QuizzId = Lessons[i].Id;
-            const Questions = Lessons[i].questions
+            const Questions = Lessons[i].content.questions
 
             for (let j = 0; j < Questions.length; j++) {
                 const QuestionId = Questions[j].Id;
@@ -636,7 +636,7 @@ const postFormationBis = async(FormationId,Lessons) =>{
                 }
                 const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
                 const QuizzId = result2.data.Id;
-                const Questions = Lessons[i].questions
+                const Questions = Lessons[i].content.questions;
 
                 for (let j = 0; j < Questions.length; j++) {
                     const tmpQuestion = {
