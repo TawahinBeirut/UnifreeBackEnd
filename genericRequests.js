@@ -520,38 +520,36 @@ const PostFormation = async(Formation,Lessons) =>{
             if (!Lessons[i].isQuizz) {
                 const tmpLesson = {
                     FormationId: FormationId,
-                    Titre: Lessons[i].Titre,
-                    Description: Lessons[i].Description,
-                    Contenu: Lessons[i].Contenu
+                    Titre: Lessons[i].title,
+                    Contenu: Lessons[i].content
                 }
                 await postSpecificRequest(Tables.Lesson, tmpLesson);
             }
             else {
                 const tmpQuizz = {
                     FormationId: FormationId,
-                    Titre: Lessons[i].Titre,
-                    Description: Lessons[i].Description
+                    Titre: Lessons[i].title,
                 }
                 const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
                 const QuizzId = result2.data.Id;
-                const Questions = Lessons[i].Questions
+                const Questions = Lessons[i].questions
 
                 for (let j = 0; j < Questions.length; j++) {
                     const tmpQuestion = {
                         QuizzId: QuizzId,
-                        Enonce : Questions[j].Enonce
+                        Enonce : Questions[j].title
                     }
                     const result3 = await postSpecificRequest(Tables.Question,tmpQuestion);
                     const QuestionId = result3.data.Id;
-                    const Reponses = Questions[j].Reponses;
+                    const Reponses = Questions[j].answers;
                     
                     for (let k = 0;k<Reponses.length;k++){
                         
                         console.log("oe")
                         const tmpReponse = {
                             QuestionId: QuestionId,
-                            Right: Reponses[k].Right,
-                            Contenu : Reponses[k].Contenu
+                            Right: Reponses[k].isCorrect,
+                            Contenu : Reponses[k].title
                         }
                         let res = await postSpecificRequest(Tables.Response,tmpReponse);
                         console.log(res)
@@ -596,7 +594,7 @@ const clearFormation = async(id,Lessons) => {
     for (let i = 0; i < Lessons.length; i++){
         if (Lessons[i].isQuizz) {
             const QuizzId = Lessons[i].Id;
-            const Questions = Lessons[i].Questions
+            const Questions = Lessons[i].questions
 
             for (let j = 0; j < Questions.length; j++) {
                 const QuestionId = Questions[j].Id;
@@ -626,38 +624,36 @@ const postFormationBis = async(FormationId,Lessons) =>{
             if (!Lessons[i].isQuizz) {
                 const tmpLesson = {
                     FormationId: FormationId,
-                    Titre: Lessons[i].Titre,
-                    Description: Lessons[i].Description,
-                    Contenu: Lessons[i].Contenu
+                    Titre: Lessons[i].title,
+                    Contenu: Lessons[i].content
                 }
                 await postSpecificRequest(Tables.Lesson, tmpLesson);
             }
             else {
                 const tmpQuizz = {
                     FormationId: FormationId,
-                    Titre: Lessons[i].Titre,
-                    Description: Lessons[i].Description
+                    Titre: Lessons[i].title,
                 }
                 const result2 = await postSpecificRequest(Tables.Quizz, tmpQuizz);
                 const QuizzId = result2.data.Id;
-                const Questions = Lessons[i].Questions
+                const Questions = Lessons[i].questions
 
                 for (let j = 0; j < Questions.length; j++) {
                     const tmpQuestion = {
                         QuizzId: QuizzId,
-                        Enonce : Questions[j].Enonce
+                        Enonce : Questions[j].title
                     }
                     const result3 = await postSpecificRequest(Tables.Question,tmpQuestion);
                     const QuestionId = result3.data.Id;
-                    const Reponses = Questions[j].Reponses;
+                    const Reponses = Questions[j].answers;
                     
                     for (let k = 0;k<Reponses.length;k++){
                         
                         console.log("oe")
                         const tmpReponse = {
                             QuestionId: QuestionId,
-                            Right: Reponses[k].Right,
-                            Contenu : Reponses[k].Contenu
+                            Right: Reponses[k].isCorrect,
+                            Contenu : Reponses[k].title
                         }
                         let res = await postSpecificRequest(Tables.Response,tmpReponse);
                         console.log(res)
