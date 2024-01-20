@@ -75,8 +75,8 @@ Router.put('/:id', async (req, res) => {
         Description: req.body.Description,
     }
     const Lessons = req.body.Lessons
-
-    putFormation(id,Formation,Lessons)
+    const oldLessons = req.body.oldLessons
+    putFormation(id,Formation,Lessons,oldLessons)
         .then((resp) => res.json(resp))
         .catch((err) => res.json(new Response(0,err.message)));
 

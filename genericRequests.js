@@ -565,10 +565,10 @@ const PostFormation = async(Formation,Lessons) =>{
     return resp;
 }
 
-const putFormation = async(id,Formation,Lessons) =>{
+const putFormation = async(id,Formation,Lessons,oldLessons) =>{
     let resp = new Response(200,"Modification réussie")
     try{
-    await clearFormation(id,Lessons)
+    await clearFormation(id,oldLessons)
     
     await prisma.formation.update({
         where:{
@@ -594,11 +594,11 @@ const clearFormation = async(id,Lessons) => {
     });
     for (let i = 0; i < Lessons.length; i++){
         if (Lessons[i].isQuizz) {
-            const QuizzId = Lessons[i].Id;
+            const QuizzId = Lessons[i].id;
             const Questions = Lessons[i].content.questions
 
             for (let j = 0; j < Questions.length; j++) {
-                const QuestionId = Questions[j].Id;
+                const QuestionId = Questions[j].id;
                 
                     await prisma.response.deleteMany({
                         where:{
