@@ -594,11 +594,11 @@ const clearFormation = async(id,Lessons) => {
     });
     for (let i = 0; i < Lessons.length; i++){
         if (Lessons[i].isQuizz) {
-            const QuizzId = Lessons[i].id;
+            const QuizzId = parseInt(Lessons[i].id);
             const Questions = Lessons[i].content.questions
 
             for (let j = 0; j < Questions.length; j++) {
-                const QuestionId = Questions[j].id;
+                const QuestionId = parseInt(Questions[j].id);
                 
                     await prisma.response.deleteMany({
                         where:{
