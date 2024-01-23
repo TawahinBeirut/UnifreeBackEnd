@@ -23,7 +23,7 @@ model User {
   Email                      String                       @unique
   Password                   String                       @default("default")
   Role                       Role                         @default(STUDENT)
-  ProfileImage      String  @default("https://firebasestorage.googleapis.com/v0/b/unifree-91a27.appspot.com/o/Capture%20d'%C3%A9cran%202023-11-02%20233453.png?alt=media&token=35f12d51-23e9-403b-8dff-8de77d136d97")
+  ProfileImage      String  @default("https://firebasestorage.googleapis.com/v0/b/unifree-91a27.appspot.com/o/default_pp.png?alt=media&token=f7ca8c6e-aa5f-4f0f-a634-476bb9169c4c")
   Commentaires               Commentaire[]
   Formations                 Formation[]
   Likes                      Like[]
