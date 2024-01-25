@@ -1,4 +1,7 @@
 const { DataResponse, Response } =  require('../Response');
+const { PrismaClient } = require('prisma/prisma-client')
+const prisma = new PrismaClient();
+const { Tables, Identificators } = require('../tables');
 
 const express = require('express')
 const Router = express.Router()
@@ -30,6 +33,18 @@ Router.post('/',async (req,res) => {
     .catch(() => res.json(new Response(0,"Erreur inconnue")));
 })
 
+Router.post('/:id',async (req,res) => {
+    const data = {
+        AutorId : req.body.AuthorId,
+        FormationId: req.body.FormationId
+    }
+    let res = await prisma.like.deleteMany({
+        where:{
+            AuthorId : data.AutorId,
+            FormationId: data.FormationId
+        }
+    }).then(() => {return new Response(200,"reussi")}).catch((err) => {return new Response(0,"echoue")})
+})
 // Speciale 
 Router.delete('/',async(req,res) => {
     deleteAll(Tables.Like)
