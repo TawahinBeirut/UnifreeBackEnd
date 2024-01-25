@@ -36,12 +36,13 @@ Router.post('/:id',async (req,res) => {
         AutorId : req.body.AuthorId,
         FormationId: req.body.FormationId
     }
-    let res = await prisma.like.deleteMany({
+    let resp = await prisma.like.deleteMany({
         where:{
             AuthorId : data.AutorId,
             FormationId: data.FormationId
         }
     }).then(() => {return new Response(200,"reussi")}).catch((err) => {return new Response(0,"echoue")})
+    res.json(resp)
 })
 // Speciale 
 Router.delete('/',async(req,res) => {
