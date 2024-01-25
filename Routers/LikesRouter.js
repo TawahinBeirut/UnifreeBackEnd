@@ -1,8 +1,6 @@
 const { DataResponse, Response } =  require('../Response');
 const { PrismaClient } = require('prisma/prisma-client')
 const prisma = new PrismaClient();
-const { Tables, Identificators } = require('../tables');
-
 const express = require('express')
 const Router = express.Router()
 const {Tables,Identificators} = require('../tables');
